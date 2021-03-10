@@ -10,6 +10,8 @@ float ball_ge_y;
 int ball_d;
 
 int score;
+
+int Hi_score;
 int seite = 0;  //0 = start , 1 = play , 2 = end
 
 void setup() {
@@ -23,6 +25,10 @@ void setup() {
   size(400, 800);
   //fullScreen();
   rectMode(CENTER);
+  
+  
+  String[] data=loadStrings("lines.txt");
+  Hi_score = int(data[0]);
 
   spieler_w = width/15;
   spieler_h = height/5;
@@ -71,6 +77,7 @@ void draw() {
 
 
 void reset() {
+  score = 0;
   spieler_x = width/10;
   spieler_y = height/2;
   ball_x = width/2;
@@ -84,6 +91,8 @@ void showGame() {
   rect(spieler_x, spieler_y, spieler_w, spieler_h, 7);
   ellipse(ball_x, ball_y, ball_d, ball_d);
   line(0, height/2, width, height/2);
+  fill(0);
+  text(score + "/"+ Hi_score,width/2,height/10);
 }
 
 void showStart() {
@@ -131,6 +140,12 @@ void berechneBall(){
         ball_ge_x = (-ball_ge_x) + 0.4 * 1;
         ball_ge_y = ball_ge_y - (spieler_y - ball_y) * 0.1;
         score = score + 1;
+        if(score > Hi_score){
+          String[] data=loadStrings("lines.txt");
+          String[] newTxt = {str(int(data[data.length -1]) + 1)}; 
+          saveStrings("lines.txt", newTxt);
+          Hi_score ++;
+        }
       } else {
         seite = 2;
       }
