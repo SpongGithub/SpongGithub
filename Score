@@ -1,0 +1,237 @@
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.content.Context;
+import android.app.Activity;
+
+Activity act;
+Context cnt;
+SharedPreferences sp;
+SharedPreferences.Editor editor;
+
+int start_time;
+int tnt;
+int time;
+boolean is_white;
+int myScore;
+String myScoreFile;
+int bau;
+int baulvl;
+float sbx = 660;
+float sby = 40;
+float sbw = 50;
+float sbh = 50;
+float x = 500;
+float y = 400;
+float w = 200;
+float h = 100;
+float gx = 500;
+float gy = 400;
+float gw = 200;
+float gh = 100;
+float r = 10;
+String baufile;
+
+
+void setup () {
+  orientation(PORTRAIT);
+  background(0, 0, 150);
+  textSize(75);
+  textAlign (CENTER);
+  act = this.getActivity();
+  cnt = act.getApplicationContext();
+  sp = PreferenceManager.getDefaultSharedPreferences(cnt);
+  editor = sp.edit();
+  myScoreFile = "Scores";
+  myScore = loadScore(myScoreFile);
+  baufile = "build";
+  bau = loadScore(baufile);
+  is_white = true;
+  tnt = 255;
+  time = millis() + 1000;
+}
+
+void settings() {
+  fullScreen();
+}
+
+void draw() {
+  background(0, 0, 80); 
+  tint(225, tnt); 
+  tnt -= 5;
+  if (millis()-start_time > 3000) { 
+    textSize(75);
+    background(#303135);
+    fill(#b3b8bb);
+    text(str(myScore), width/2, height/14);
+    if (bau<20) {
+      text("Level: "+str(bau), width/1.5, height/2.35);
+    } else {
+      text("Level: MAX", width/1.5, height/2.35);
+    }
+    fill(#054640);
+    if (bau==0) {
+      rect(x, y, w, h, r);
+    }
+  }
+}
+
+  void mousePressed() {
+    if (mousePressed) {
+          if (mouseX>x && mouseX <x+w && mouseY>y && mouseY <y+h) {
+        if (myScore > 9) {
+          myScore -= 10;
+          ++bau;
+          saveScore(bau, baufile);
+        }
+      } else {
+        bau = loadScore(baufile);
+        myScore++;
+        saveScore(myScore, myScoreFile);
+      }
+    }
+  }
+
+  void mouseDragged() {
+    if (mouseX>x && mouseX <x+w && mouseY>y && mouseY <y+h) {
+      if (myScore > 9) {
+        myScore -= 10;
+        ++bau;
+        saveScore(bau, baufile);
+      }
+    }
+  }
+
+void saveScore(int score, String name) {
+  //editor.clear();
+  editor.putInt(name, score);
+  editor.commit();
+}
+
+int loadScore(String name) {
+  int getScore = sp.getInt(name, 0);
+  return getScore;
+}
+
+void onPause() {
+  super.onPause();
+  saveScore(myScore, myScoreFile);
+}
+```
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.content.Context;
+import android.app.Activity;
+
+Activity act;
+Context cnt;
+SharedPreferences sp;
+SharedPreferences.Editor editor;
+
+int start_time;
+int tnt;
+int time;
+boolean is_white;
+int myScore;
+String myScoreFile;
+int bau;
+int baulvl;
+float sbx = 660;
+float sby = 40;
+float sbw = 50;
+float sbh = 50;
+float x = 500;
+float y = 400;
+float w = 200;
+float h = 100;
+float gx = 500;
+float gy = 400;
+float gw = 200;
+float gh = 100;
+float r = 10;
+String baufile;
+
+
+void setup () {
+  orientation(PORTRAIT);
+  background(0, 0, 150);
+  textSize(75);
+  textAlign (CENTER);
+  act = this.getActivity();
+  cnt = act.getApplicationContext();
+  sp = PreferenceManager.getDefaultSharedPreferences(cnt);
+  editor = sp.edit();
+  myScoreFile = "Scores";
+  myScore = loadScore(myScoreFile);
+  baufile = "build";
+  bau = loadScore(baufile);
+  is_white = true;
+  tnt = 255;
+  time = millis() + 1000;
+}
+
+void settings() {
+  fullScreen();
+}
+
+void draw() {
+  background(0, 0, 80); 
+  tint(225, tnt); 
+  tnt -= 5;
+  if (millis()-start_time > 3000) { 
+    textSize(75);
+    background(#303135);
+    fill(#b3b8bb);
+    text(str(myScore), width/2, height/14);
+    if (bau<20) {
+      text("Level: "+str(bau), width/1.5, height/2.35);
+    } else {
+      text("Level: MAX", width/1.5, height/2.35);
+    }
+    fill(#054640);
+    if (bau==0) {
+      rect(x, y, w, h, r);
+    }
+  }
+}
+
+  void mousePressed() {
+    if (mousePressed) {
+          if (mouseX>x && mouseX <x+w && mouseY>y && mouseY <y+h) {
+        if (myScore > 9) {
+          myScore -= 10;
+          ++bau;
+          saveScore(bau, baufile);
+        }
+      } else {
+        bau = loadScore(baufile);
+        myScore++;
+        saveScore(myScore, myScoreFile);
+      }
+    }
+  }
+
+  void mouseDragged() {
+    if (mouseX>x && mouseX <x+w && mouseY>y && mouseY <y+h) {
+      if (myScore > 9) {
+        myScore -= 10;
+        ++bau;
+        saveScore(bau, baufile);
+      }
+    }
+  }
+
+void saveScore(int score, String name) {
+  //editor.clear();
+  editor.putInt(name, score);
+  editor.commit();
+}
+
+int loadScore(String name) {
+  int getScore = sp.getInt(name, 0);
+  return getScore;
+}
+
+void onPause() {
+  super.onPause();
+  saveScore(myScore, myScoreFile);
+}
