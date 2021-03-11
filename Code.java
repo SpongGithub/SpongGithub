@@ -6,7 +6,10 @@ Activity act;
 Context cnt;
 SharedPreferences sp;
 SharedPreferences.Editor editor;
-//PImage st; //st = settings
+int myScore;
+String myScoreFile;
+int hiScore;
+String hiScoreFile;
 PImage skin_1;
 PImage char_1;
 int spieler_x;
@@ -18,12 +21,9 @@ float ball_y;
 float ball_ge_x;
 float ball_ge_y;
 int ball_d;
-int myScore;
-String myScoreFile;
 int seite = 0; //0 = start, 1 = play, 2 = end 
 void setup() { 
   frameRate(120);
-  //st = loadImage("st.png");
   skin_1 = loadImage("skin_1.png");
   char_1 = loadImage("char_1.png");
 
@@ -38,13 +38,19 @@ void setup() {
   cnt = act.getApplicationContext();
   sp = PreferenceManager.getDefaultSharedPreferences(cnt);
   editor = sp.edit();
+  hiScoreFile = "hiScores";
+  hiScore = loadScore(hiScoreFile);
   myScoreFile = "Scores";
   myScore = loadScore(myScoreFile);
 } 
-void draw() { 
+void draw(){
+  if(myScore<hiScore){
+    background(255);
+    fill(0);
+    text(str(myScore/hiScore), width/2, height/14);
+    saveScore(hiScore, hiScoreFile);
+  }
   background(255);
-  //image(st, width/1.2, height/20);
-  //st.resize(width/8, height/16);
   if (seite == 0) {
     showStart(); 
     if (mousePressed) { 
@@ -82,13 +88,9 @@ void reset() {
 } 
 void showGame() {
   fill(0);
-  text(str(myScore), width/2, height/14);
   fill(255);
-  image(char_1, spieler_x-spieler_w/2, spieler_y-spieler_h/2);
-  char_1.resize(spieler_w, spieler_h);
-  image(skin_1, ball_x, ball_y);
-  skin_1.resize(ball_d, ball_d);
-  //ellipse(ball_x, ball_y, ball_d, ball_d);
+  rect(spieler_x, spieler_y, spieler_w, spieler_h);
+  ellipse(ball_x, ball_y, ball_d, ball_d);
 } 
 void showStart() { 
   fill(255); 
@@ -130,9 +132,9 @@ void berechneBall() {
   if (ball_x < spieler_x + spieler_w) { 
     if (ball_y < (spieler_y + spieler_h/2) && ball_y > (spieler_y - spieler_h/2)) { 
       ball_ge_x = (-ball_ge_x) + 1 * 1; 
-      ball_ge_y = ball_ge_y - (spieler_y - ball_y) * 0.1; 
+      ball_ge_y = ball_ge_y - (spieler_y - ball_y) * 0.1;
       myScore++;
-      saveScore(myScore, myScoreFile);
+      saveScore(hiScore, hiScoreFile);
     } else {
       seite = 2;
     }
@@ -144,9 +146,10 @@ void berechneBall() {
     ball_ge_x = -ball_ge_x;
   }
 }
-void saveScore(int score, String name) {
+
+void saveScore(int hiscore, String name) {
   //editor.clear();
-  editor.putInt(name, score);
+  editor.putInt(name, hiscore);
   editor.commit();
 }
 
@@ -157,5 +160,5 @@ int loadScore(String name) {
 
 void onPause() {
   super.onPause();
-  saveScore(myScore, myScoreFile);
+  saveScore(hiScore, hiScoreFile);
 }
