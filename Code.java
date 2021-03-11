@@ -10,8 +10,6 @@ int myScore;
 String myScoreFile;
 int hiScore;
 String hiScoreFile;
-PImage skin_1;
-PImage char_1;
 int spieler_x;
 int spieler_y;
 int spieler_w;
@@ -24,9 +22,6 @@ int ball_d;
 int seite = 0; //0 = start, 1 = play, 2 = end 
 void setup() { 
   frameRate(120);
-  skin_1 = loadImage("skin_1.png");
-  char_1 = loadImage("char_1.png");
-
   PFont font = createFont("SansSerif", 24 * displayDensity); 
   textFont(font); 
   fullScreen(); 
