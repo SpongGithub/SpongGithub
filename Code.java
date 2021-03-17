@@ -6,6 +6,11 @@ Activity act;
 Context cnt;
 SharedPreferences sp;
 SharedPreferences.Editor editor;
+PImage skin_1;
+PImage char_r;
+PImage play;
+PImage try_b;
+PImage st;
 int myScore;
 String myScoreFile;
 int hiScore;
@@ -20,7 +25,13 @@ float ball_ge_x;
 float ball_ge_y;
 int ball_d;
 int seite = 0; //0 = start, 1 = play, 2 = end 
-void setup() { 
+void setup() {
+  orientation(PORTRAIT);
+  play = loadImage("play.png");
+  try_b = loadImage("try_b.png");
+  char_r = loadImage("char_1.png");
+  skin_1 = loadImage("skin_1.png");
+  st = loadImage("st2.png");
   frameRate(120);
   PFont font = createFont("SansSerif", 24 * displayDensity); 
   textFont(font); 
@@ -39,18 +50,13 @@ void setup() {
   myScore = loadScore(myScoreFile);
 } 
 void draw(){
-  if(myScore<hiScore){
-    background(255);
-    fill(0);
-    text(str(myScore/hiScore), width/2, height/14);
-    saveScore(hiScore, hiScoreFile);
-  }
-  background(255);
+  background(0);
   if (seite == 0) {
-    showStart(); 
+    showStart();
     if (mousePressed) { 
       if (mouseX > width/2 - width/3/2 && mouseX < width/2 + width/3/2 && mouseY > height/1.5 - height/12/2 && mouseY < height/1.5 + height/12/2) { 
         reset(); 
+        delay(300);
         seite = 1;
       }
     }
@@ -63,7 +69,7 @@ void draw(){
     berechneBall();
   } 
   if (seite == 2) { 
-    showEnd(); 
+    showEnd();
     if (mousePressed) { 
       if (mouseX > width/2 - width/3/2 && mouseX < width/2 + width/3/2 && mouseY > height/1.5 - height/12/2 && mouseY < height/1.5 + height/12/2) { 
         reset();
@@ -73,7 +79,8 @@ void draw(){
     }
   }
 } 
-void reset() { 
+void reset() {
+  myScore = 0;
   spieler_x = width/10; 
   spieler_y = height/2; 
   ball_x = width/2; 
@@ -81,78 +88,85 @@ void reset() {
   ball_ge_x = -4; 
   ball_ge_y = 0;
 } 
-void showGame() {
-  fill(0);
+void showGame(){
   fill(255);
-  rect(spieler_x, spieler_y, spieler_w, spieler_h);
-  ellipse(ball_x, ball_y, ball_d, ball_d);
-} 
-void showStart() { 
-  fill(255); 
-  rect(width/2, height/1.5, width/3, height/12, 7); 
-  textAlign(CENTER); 
-  textSize(40); 
-  fill(0); 
-  text("SPONG", width/2, height/5); 
-  textSize(20); 
-  fill(0); 
-  text("START", width/2, height/1.49);
+  image(char_r, spieler_x - spieler_w/2 , spieler_y - spieler_h/2);
+  char_r.resize(spieler_w, spieler_h);
+  //rect(spieler_x, spieler_y, spieler_w, spieler_h);
+  image(skin_1, ball_x - ball_d/2 , ball_y - ball_d/2);
+  skin_1.resize(ball_d, ball_d);
+  //ellipse(ball_x, ball_y, ball_d, ball_d);
+  fill(255);
+  textSize(20 * displayDensity); 
+  text("Score: " + myScore, width/2, height/14);
 }
-void showEnd() { 
+void showStart(){
   fill(255); 
-  rect(width/2, height/1.5, width/3, height/12, 7); 
+  image(play, width/2 - (width/3)/2 , height/1.5 - (height/12)/2);
+  play.resize(width/3, height/12);
   textAlign(CENTER); 
-  textSize(40); 
-  fill(0); 
-  text("VERLOREN", width/2, height/5); 
-  textSize(20); 
-  fill(0); 
-  text("TRY AGAIN", width/2, height/1.49);
-} 
-void berechnePlayerY() { 
-  if (mousePressed) { 
-    if (mouseY > height / 2) { 
+  textSize(40 * displayDensity); 
+  fill(255); 
+  text("SPONG\n\nBETA", width/2, height/5); 
+  textSize(20 * displayDensity); 
+  fill(255); 
+  text("Dein Highscore: " + hiScore + " Punkte", width/2, height/14);
+  image(st, width/2.4 - (width/6)/2.4, height/2 - (height/12)/2);
+  st.resize(width/6, height/12);
+}
+void showEnd() {
+  fill(255); 
+  image(try_b, width/2 - (width/3)/2 , height/1.5 - (height/12)/2);
+  try_b.resize(width/3, height/12);
+  textAlign(CENTER); 
+  textSize(40 * displayDensity); 
+  fill(255);
+  text("VERLOREN", width/2, height/5);
+}
+void berechnePlayerY() {
+  if (mousePressed) {
+    if (mouseY > height / 2) {
       if (spieler_y < height - spieler_h/2) { 
         spieler_y = spieler_y + 10;
       }
-    } 
+    }
     if (mouseY < height / 2) { 
       if (spieler_y > spieler_h/2) { 
         spieler_y = spieler_y - 10;
       }
     }
   }
-} 
-void berechneBall() { 
+}
+void berechneBall() {
   if (ball_x < spieler_x + spieler_w) { 
     if (ball_y < (spieler_y + spieler_h/2) && ball_y > (spieler_y - spieler_h/2)) { 
       ball_ge_x = (-ball_ge_x) + 1 * 1; 
       ball_ge_y = ball_ge_y - (spieler_y - ball_y) * 0.1;
       myScore++;
-      saveScore(hiScore, hiScoreFile);
+      if(myScore > hiScore){
+        hiScore++;
+        saveScore(hiScore,hiScoreFile);
+        }
     } else {
       seite = 2;
     }
-  } 
+  }
   if (ball_y > height-ball_d/2 || ball_y < ball_d/2) { 
     ball_ge_y = -ball_ge_y;
-  } 
+  }
   if (ball_x > width-ball_d/2) { 
     ball_ge_x = -ball_ge_x;
   }
 }
-
-void saveScore(int hiscore, String name) {
+void saveScore(int hiScore, String hiScoreFile) {
   //editor.clear();
-  editor.putInt(name, hiscore);
+  editor.putInt(hiScoreFile, hiScore);
   editor.commit();
 }
-
 int loadScore(String name) {
   int getScore = sp.getInt(name, 0);
   return getScore;
 }
-
 void onPause() {
   super.onPause();
   saveScore(hiScore, hiScoreFile);
