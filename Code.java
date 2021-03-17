@@ -111,7 +111,7 @@ void showStart(){
   textSize(20 * displayDensity); 
   fill(255); 
   text("Dein Highscore: " + hiScore + " Punkte", width/2, height/14);
-  image(st, width/2.4 - (width/6)/2.4, height/2 - (height/12)/2);
+  image(st, width/2.4, height/2);
   st.resize(width/6, height/12);
 }
 void showEnd() {
